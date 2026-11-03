@@ -46,7 +46,8 @@ Node.js 20+ (ou versão compatível com as dependências), npm e um servidor MyS
    Copy-Item frontend\.env.example frontend\.env
    ```
 
-   Ajuste `DATABASE_URL`, `JWT_SECRET`, `FRONTEND_URL` e `VITE_API_URL`.
+   Ajuste `DATABASE_URL`, `JWT_SECRET`, `DATABASE_SSL`, `FRONTEND_URL` e `VITE_API_URL`.
+   Em produção, use `DATABASE_SSL="true"` para exigir TLS com validação do certificado do MySQL.
 
 3. Instale e prepare o backend:
 
@@ -90,7 +91,7 @@ Use `Authorization: Bearer <token>` nas rotas protegidas.
 - Crie um Web Service apontando para este repositório, com Root Directory `backend`.
 - Build Command: `npm install && npx prisma generate && npx prisma migrate deploy`.
 - Start Command: `npm start`.
-- Cadastre `DATABASE_URL`, `JWT_SECRET`, `PORT` e `FRONTEND_URL` nas variáveis do serviço.
+- Cadastre `DATABASE_URL`, `DATABASE_SSL=true`, `JWT_SECRET`, `PORT` e `FRONTEND_URL` nas variáveis do serviço.
 - Use um MySQL gerenciado acessível publicamente e mantenha a URL fora do Git.
 
 ### Frontend na Vercel

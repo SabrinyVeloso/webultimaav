@@ -5,4 +5,17 @@ api.interceptors.request.use((config) => {
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem('meu_controle_token');
+      localStorage.removeItem('meu_controle_user');
+      if (window.location.pathname !== '/login' && window.location.pathname !== '/cadastro') {
+        window.location.assign('/login');
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 export default api;

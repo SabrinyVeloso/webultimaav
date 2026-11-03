@@ -1,4 +1,5 @@
 import { prisma } from '../config/prisma.js';
+import { HttpError } from '../utils/httpError.js';
 
 export async function dashboard(usuarioId) {
   const now = new Date();
@@ -20,6 +21,15 @@ export async function dashboard(usuarioId) {
 
 export async function report(usuarioId, query) {
   const where = { usuarioId };
+  const isDate = (value) => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    const [year, month, day] = value.split('-').map(Number);
+    const date = new Date(Date.UTC(year, month - 1, day));
+    return date.getUTCFullYear() === year && date.getUTCMonth() + 1 === month && date.getUTCDate() === day;
+  };
+  if (query.de && !isDate(query.de)) throw new HttpError(400, 'Data inicial inválida.');
+  if (query.ate && !isDate(query.ate)) throw new HttpError(400, 'Data final inválida.');
+  if (query.de && query.ate && query.de > query.ate) throw new HttpError(400, 'O período informado é inválido.');
   if (query.de) where.data = { gte: new Date(`${query.de}T00:00:00.000Z`) };
   if (query.ate) where.data = { ...(where.data || {}), lte: new Date(`${query.ate}T23:59:59.999Z`) };
   const expenses = await prisma.despesa.findMany({ where });
