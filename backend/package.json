@@ -1,0 +1,27 @@
+{
+  "name": "meu-controle-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy"
+  },
+  "dependencies": {
+    "@prisma/client": "7.10.0",
+    "@prisma/adapter-mariadb": "7.10.0",
+    "bcrypt": "6.0.0",
+    "cors": "2.8.5",
+    "dotenv": "16.6.1",
+    "express": "5.1.0",
+    "jsonwebtoken": "9.0.2",
+    "mariadb": "3.4.5"
+  },
+  "devDependencies": {
+    "nodemon": "3.1.10",
+    "prisma": "7.10.0"
+  }
+}
