@@ -15,7 +15,8 @@ export function periodFromDate(value) {
 
 export async function isClosed(usuarioId, date) {
   const { mes, ano } = periodFromDate(date);
-  return Boolean(await prisma.mesFechado.findUnique({ where: { usuarioId_mes_ano: { usuarioId, mes, ano } } }));
+  const month = await prisma.mesFechado.findUnique({ where: { usuarioId_mes_ano: { usuarioId, mes, ano } } });
+  return month?.status !== 'ABERTO' && Boolean(month);
 }
 
 export async function ensureOpen(usuarioId, date) {
@@ -26,5 +27,18 @@ export async function closeMonth(usuarioId, mes, ano) {
   if (!Number.isInteger(mes) || mes < 1 || mes > 12 || !Number.isInteger(ano) || ano < 2000) {
     throw new HttpError(400, 'Mês ou ano inválido.');
   }
-  return prisma.mesFechado.create({ data: { usuarioId, mes, ano } });
+  return prisma.mesFechado.upsert({
+    where: { usuarioId_mes_ano: { usuarioId, mes, ano } },
+    update: { status: 'ENCERRADO' },
+    create: { usuarioId, mes, ano, status: 'ENCERRADO' }
+  });
+}
+
+export async function reopenMonth(usuarioId, mes, ano) {
+  if (!Number.isInteger(mes) || mes < 1 || mes > 12 || !Number.isInteger(ano) || ano < 2000) {
+    throw new HttpError(400, 'Mês ou ano inválido.');
+  }
+  const month = await prisma.mesFechado.findUnique({ where: { usuarioId_mes_ano: { usuarioId, mes, ano } } });
+  if (!month) throw new HttpError(404, 'Mês encerrado não encontrado.');
+  return prisma.mesFechado.update({ where: { id: month.id }, data: { status: 'ABERTO' } });
 }

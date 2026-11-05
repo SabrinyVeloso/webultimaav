@@ -11,6 +11,11 @@ enum Situacao {
   PENDENTE
 }
 
+enum StatusMes {
+  ENCERRADO
+  ABERTO
+}
+
 model Usuario {
   id        Int      @id @default(autoincrement())
   nome      String
@@ -45,6 +50,7 @@ model MesFechado {
   ano       Int
   usuarioId Int
   usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  status    StatusMes @default(ENCERRADO)
   createdAt DateTime @default(now())
 
   @@unique([usuarioId, mes, ano])

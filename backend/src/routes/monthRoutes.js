@@ -5,4 +5,5 @@ const router = Router();
 router.use(auth);
 router.get('/', controller.list);
 router.post('/', controller.close);
+router.post('/reopen', controller.reopen);
 export default router;
